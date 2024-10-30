@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Project Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .journey-board {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .board-header {
+            background: #2196F3;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .board-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .board-content.active {
+            display: block;
+        }
+
+        .task-container {
+            margin: 1rem 0;
+        }
+
+        .task-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .asset-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .asset-container:hover {
+            transform: translateX(10px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .asset-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .asset-title {
+            font-weight: 500;
+        }
+
+        .asset-type {
+            background: #e3f2fd;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #1976D2;
+        }
+
+        .asset-description {
+            margin-top: 1rem;
+            display: none;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .asset-description.active {
+            display: block;
+        }
+
+        .toggle-arrow {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-arrow.active {
+            transform: rotate(180deg);
+        }
+
+        .media-container {
+            margin-top: 1rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .media-container iframe {
+            width: 100%;
+            height: 315px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="journey-board">
+            <div class="board-header" onclick="toggleBoard()">
+                <h2>Journey Board</h2>
+                <span class="toggle-arrow">▼</span>
+            </div>
+            <div class="board-content" id="boardContent">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const journeyData = {
+            tasks: [
+                {
+                    taskName: "Explore the world of management",
+                    assets: [
+                        {
+                            title: "Technical Project Management",
+                            type: "Video",
+                            description: "Story of Alignment, Scope of Agility, Specific Accountable, Staggering Approach",
+                            mediaUrl: "https://www.youtube.com/embed/TiMRwri1xJ8"
+                        },
+                        {
+                            title: "Threadbuild",
+                            type: "Input",
+                            description: "Watch the video and thread build, and jot out key threads while watching that video.",
+                            mediaUrl: null
+                        },
+                        {
+                            title: "Structure you pointers",
+                            type: "Input",
+                            description: "Write a 400-500 word article, from your thread. Publish your understanding, and showcase your learning to the entire world.",
+                            mediaUrl: null
+                        },
+                        {
+                            title: "4SA Method",
+                            type: "Article",
+                            description: "To explore more read more",
+                            mediaUrl: "https://dtthon.deepthought.education/sharer?id=01aa3cff-db8e-8d9d-afc0-1671715937878"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        function toggleBoard() {
+            const content = document.getElementById('boardContent');
+            content.classList.toggle('active');
+            document.querySelector('.board-header .toggle-arrow').classList.toggle('active');
+        }
+
+        function toggleDescription(element) {
+            const description = element.parentElement.nextElementSibling;
+            description.classList.toggle('active');
+            element.classList.toggle('active');
+        }
+
+        function renderJourneyBoard() {
+            const boardContent = document.getElementById('boardContent');
+            let html = '';
+
+            journeyData.tasks.forEach((task, index) => {
+                html += `
+                    <div class="task-container">
+                        <div class="task-header">${task.taskName}</div>
+                        ${task.assets.map(asset => `
+                            <div class="asset-container">
+                                <div class="asset-header">
+                                    <div>
+                                        <span class="asset-title">${asset.title}</span>
+                                        <span class="asset-type">${asset.type}</span>
+                                    </div>
+                                    <span class="toggle-arrow" onclick="toggleDescription(this)">▼</span>
+                                </div>
+                                <div class="asset-description">
+                                    <p>${asset.description}</p>
+                                    ${asset.mediaUrl && asset.type === 'Video' ? `
+                                        <div class="media-container">
+                                            <iframe src="${asset.mediaUrl}" frameborder="0" allowfullscreen></iframe>
+                                        </div>
+                                    ` : ''}
+                                    ${asset.mediaUrl && asset.type === 'Article' ? `
+                                        <div class="media-container">
+                                            <a href="${asset.mediaUrl}" target="_blank">Read Article</a>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+
+            boardContent.innerHTML = html;
+        }
+
+        // Initialize the board
+        renderJourneyBoard();
+    </script>
+</body>
+</html>

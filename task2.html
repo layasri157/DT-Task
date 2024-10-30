@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Technical Project Management</title>
+    <link rel="stylesheet" href="task2.css">
+</head>
+<body>
+    <div class="container">
+        <div class="journey-board">
+            <h2>Journey Board</h2>
+            <div id="journeyItems"></div>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Your JSON data
+        const projectData = {
+            tasks: [
+                {
+                    taskName: "Explore the world of management",
+                    description: "Story of Alignment, Scope of Agility, Specific Accountable, Staggering Approach",
+                    assets: [
+                        {
+                            title: "Technical Project Management",
+                            type: "Video",
+                            description: "Watch the video and understand the basics of technical project management",
+                            mediaUrl: "https://www.youtube.com/embed/TiMRwri1xJ8"
+                        },
+                        {
+                            title: "Threadbuild",
+                            type: "Input",
+                            description: "Write key threads from the video",
+                            mediaUrl: null
+                        },
+                        {
+                            title: "Structure your pointers",
+                            type: "Input",
+                            description: "Write a 400-500 word article from your thread",
+                            mediaUrl: null
+                        },
+                        {
+                            title: "4SA Method",
+                            type: "Article",
+                            description: "Learn more about the 4SA approach",
+                            mediaUrl: "https://dtthon.deepthought.education/sharer?id=01aa3cff-db8e-8d9d-afc0-1671715937878"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        function renderJourneyBoard() {
+            const journeyItems = document.getElementById('journeyItems');
+            projectData.tasks.forEach((task, index) => {
+                const item = document.createElement('div');
+                item.className = 'journey-item';
+                item.textContent = task.taskName;
+                item.onclick = () => loadTask(index);
+                journeyItems.appendChild(item);
+            });
+        }
+
+        function loadTask(taskIndex) {
+            const task = projectData.tasks[taskIndex];
+            const mainContent = document.getElementById('mainContent');
+            
+            let html = `
+                <h1 class="task-title">${task.taskName}</h1>
+                <p class="task-description">${task.description}</p>
+            `;
+
+            task.assets.forEach(asset => {
+                html += `
+                    <div class="asset-container">
+                        <div class="asset-header">
+                            <span class="asset-title">${asset.title}</span>
+                            <span class="asset-type">${asset.type}</span>
+                        </div>
+                        <div class="asset-content">
+                            <p>${asset.description}</p>
+                            ${renderAssetContent(asset)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            mainContent.innerHTML = html;
+        }
+
+        function renderAssetContent(asset) {
+            switch(asset.type) {
+                case 'Video':
+                    return `
+                        <div class="media-container">
+                            <iframe src="${asset.mediaUrl}" allowfullscreen></iframe>
+                        </div>
+                    `;
+                case 'Input':
+                    return `<textarea class="input-box" placeholder="Enter your response here..."></textarea>`;
+                case 'Article':
+                    return `<a href="${asset.mediaUrl}" target="_blank">Read Article</a>`;
+                default:
+                    return '';
+            }
+        }
+
+        // Initialize the page
+        renderJourneyBoard();
+        loadTask(0);
+    </script>
+</body>
+</html>
